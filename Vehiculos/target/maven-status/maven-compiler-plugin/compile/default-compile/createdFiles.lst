@@ -1,0 +1,4 @@
+com\guevara\vehiculos\VehiculosApplication.class
+com\guevara\vehiculos\model\Vehiculo.class
+com\guevara\vehiculos\service\VehiculoService.class
+com\guevara\vehiculos\repository\VehiculoRepository.class
