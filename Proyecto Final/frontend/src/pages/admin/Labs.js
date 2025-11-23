@@ -46,7 +46,9 @@ export default function Labs() {
 
   const openScheduleModal = (lab) => {
     setSelectedLab(lab);
-    setScheduleSlots(lab.schedule.length > 0 ? lab.schedule : [
+    // Verificar si lab.schedule existe y tiene elementos
+    const hasSchedule = lab.schedule && Array.isArray(lab.schedule) && lab.schedule.length > 0;
+    setScheduleSlots(hasSchedule ? lab.schedule : [
       { dayOfWeek: 'MONDAY', start: '08:00', end: '17:00' }
     ]);
     setShowScheduleModal(true);
@@ -111,7 +113,7 @@ export default function Labs() {
                     style={{ width: '80px' }}
                   />
                 </td>
-                <td>{lab.schedule.length} configurados</td>
+                <td>{lab.schedule && lab.schedule.length > 0 ? `${lab.schedule.length} configurados` : 'Sin configurar'}</td>
                 <td>
                   <button onClick={() => openScheduleModal(lab)} className="btn-secondary">
                     Configurar Horario
@@ -166,15 +168,42 @@ export default function Labs() {
 
       {showScheduleModal && (
         <div className="modal-overlay" onClick={() => setShowScheduleModal(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
+          <div className="modal large" onClick={(e) => e.stopPropagation()}>
             <h2>Configurar Horario - {selectedLab.code}</h2>
+            <p style={{ color: '#666', marginBottom: '20px' }}>
+              Define los horarios en los que el laboratorio estará disponible para reservas.
+            </p>
+            
+            {scheduleSlots.length === 0 && (
+              <div style={{ padding: '20px', background: '#fff3cd', borderRadius: '6px', marginBottom: '15px' }}>
+                <p style={{ margin: 0, color: '#856404' }}>
+                  ⚠️ No hay horarios configurados. Agrega al menos un horario para que el laboratorio esté disponible.
+                </p>
+              </div>
+            )}
+            
             {scheduleSlots.map((slot, index) => (
-              <div key={index} style={{ marginBottom: '15px', padding: '10px', border: '1px solid #ddd', borderRadius: '6px' }}>
+              <div key={index} className="schedule-slot">
+                <div className="schedule-header">
+                  <span style={{ fontWeight: '500', color: '#333' }}>Horario #{index + 1}</span>
+                  {scheduleSlots.length > 1 && (
+                    <button 
+                      type="button" 
+                      onClick={() => removeScheduleSlot(index)} 
+                      className="btn-danger"
+                      style={{ padding: '4px 12px', fontSize: '12px' }}
+                    >
+                      ✕ Eliminar
+                    </button>
+                  )}
+                </div>
+                
                 <div className="form-group">
-                  <label>Día</label>
+                  <label>Día de la semana</label>
                   <select
                     value={slot.dayOfWeek}
                     onChange={(e) => updateScheduleSlot(index, 'dayOfWeek', e.target.value)}
+                    style={{ width: '100%' }}
                   >
                     <option value="MONDAY">Lunes</option>
                     <option value="TUESDAY">Martes</option>
@@ -185,38 +214,45 @@ export default function Labs() {
                     <option value="SUNDAY">Domingo</option>
                   </select>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                
+                <div className="time-inputs">
                   <div className="form-group">
-                    <label>Inicio</label>
+                    <label>Hora de inicio</label>
                     <input
                       type="time"
                       value={slot.start}
                       onChange={(e) => updateScheduleSlot(index, 'start', e.target.value)}
+                      style={{ width: '100%' }}
                     />
                   </div>
                   <div className="form-group">
-                    <label>Fin</label>
+                    <label>Hora de fin</label>
                     <input
                       type="time"
                       value={slot.end}
                       onChange={(e) => updateScheduleSlot(index, 'end', e.target.value)}
+                      style={{ width: '100%' }}
                     />
                   </div>
                 </div>
-                <button type="button" onClick={() => removeScheduleSlot(index)} className="btn-danger" style={{ marginTop: '10px' }}>
-                  Eliminar
-                </button>
               </div>
             ))}
-            <button type="button" onClick={addScheduleSlot} className="btn-secondary" style={{ marginBottom: '15px' }}>
-              + Agregar Horario
+            
+            <button 
+              type="button" 
+              onClick={addScheduleSlot} 
+              className="btn-secondary" 
+              style={{ marginBottom: '20px', width: '100%' }}
+            >
+              + Agregar Nuevo Horario
             </button>
+            
             <div className="modal-actions">
               <button onClick={() => setShowScheduleModal(false)} className="btn-secondary">
                 Cancelar
               </button>
               <button onClick={handleScheduleSubmit} className="btn-primary">
-                Guardar
+                💾 Guardar Horarios
               </button>
             </div>
           </div>
