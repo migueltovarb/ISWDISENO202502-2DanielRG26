@@ -138,4 +138,15 @@ public class AdminController {
     var activos = reservations.findByStatus(com.labturnos.domain.ReservationStatus.ACTIVA).stream().map(r -> r.getStudentId()).distinct().toList();
     return ResponseEntity.ok(Map.of("usuarios_activos", activos));
   }
+
+  @GetMapping("/reservas")
+  public ResponseEntity<?> listarTodasReservas() {
+    return ResponseEntity.ok(reservations.findAll());
+  }
+
+  @DeleteMapping("/reservas/{id}")
+  public ResponseEntity<Void> eliminarReserva(@PathVariable String id) {
+    reservations.deleteById(id);
+    return ResponseEntity.ok().build();
+  }
 }

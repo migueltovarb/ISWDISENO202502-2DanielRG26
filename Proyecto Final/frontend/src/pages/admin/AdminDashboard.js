@@ -5,6 +5,7 @@ import Labs from './Labs';
 import Equipment from './Equipment';
 import Users from './Users';
 import Reports from './Reports';
+import Reservations from './Reservations';
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
@@ -39,6 +40,11 @@ export default function AdminDashboard() {
               Usuarios
             </button>
           </Link>
+          <Link to="/admin/reservations">
+            <button className={`tab ${activeTab === 'reservations' ? 'active' : ''}`} onClick={() => setActiveTab('reservations')}>
+              Reservas
+            </button>
+          </Link>
           <Link to="/admin/reports">
             <button className={`tab ${activeTab === 'reports' ? 'active' : ''}`} onClick={() => setActiveTab('reports')}>
               Reportes
@@ -51,6 +57,7 @@ export default function AdminDashboard() {
           <Route path="/labs" element={<Labs />} />
           <Route path="/equipment" element={<Equipment />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/reservations" element={<Reservations />} />
           <Route path="/reports" element={<Reports />} />
         </Routes>
       </div>
