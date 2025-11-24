@@ -110,8 +110,18 @@ export default function Reservations() {
                 <tr key={reservation.id}>
                   <td>{reservation.date}</td>
                   <td>{reservation.startTime} - {reservation.endTime}</td>
-                  <td>{reservation.labId}</td>
-                  <td>{reservation.equipmentId}</td>
+                  <td>
+                    <div>
+                      <strong>{reservation.labCode || reservation.labId}</strong>
+                      {reservation.labName && <div style={{ fontSize: '12px', color: '#666' }}>{reservation.labName}</div>}
+                    </div>
+                  </td>
+                  <td>
+                    <div>
+                      <strong>{reservation.equipmentIdentifier || reservation.equipmentId}</strong>
+                      {reservation.equipmentType && <div style={{ fontSize: '12px', color: '#666' }}>{reservation.equipmentType}</div>}
+                    </div>
+                  </td>
                   <td>{getStatusBadge(reservation.status)}</td>
                   <td>
                     {canModifyOrCancel(reservation) && (

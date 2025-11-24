@@ -104,7 +104,33 @@ public class ReservationService {
     notifications.push(studentId, NotificationType.RESERVA_CANCELADA, "Reserva cancelada " + r.getId());
   }
 
-  public List<Reservation> history(String studentId) {
-    return reservations.findByStudentIdOrderByDateDescStartTimeDesc(studentId);
+  public List<com.labturnos.dto.ReservationDetailDTO> history(String studentId) {
+    List<Reservation> reservationList = reservations.findByStudentIdOrderByDateDescStartTimeDesc(studentId);
+    return reservationList.stream().map(r -> {
+      com.labturnos.dto.ReservationDetailDTO dto = new com.labturnos.dto.ReservationDetailDTO();
+      dto.setId(r.getId());
+      dto.setDate(r.getDate());
+      dto.setStartTime(r.getStartTime());
+      dto.setEndTime(r.getEndTime());
+      dto.setStatus(r.getStatus());
+      dto.setLabId(r.getLabId());
+      dto.setEquipmentId(r.getEquipmentId());
+      
+      // Obtener información del laboratorio
+      Lab lab = labs.findById(r.getLabId()).orElse(null);
+      if (lab != null) {
+        dto.setLabCode(lab.getCode());
+        dto.setLabName(lab.getName());
+      }
+      
+      // Obtener información del equipo
+      Equipment equipment = equipmentRepo.findById(r.getEquipmentId()).orElse(null);
+      if (equipment != null) {
+        dto.setEquipmentIdentifier(equipment.getIdentifier());
+        dto.setEquipmentType(equipment.getType());
+      }
+      
+      return dto;
+    }).toList();
   }
 }
